@@ -1,0 +1,20 @@
+---
+title: Gadget tracing limitations
+sidebar_position: 1
+---
+
+This guide covers known limitations of gadget tracing in Inspektor Gadget.
+
+### Statically compiled binaries
+
+Uprobe-based gadgets, such as `trace_malloc`, cannot trace statically compiled
+binaries. They also cannot trace binaries that invoke syscalls directly using
+`syscall(syscall_id, ...)`, bypassing the standard C library wrappers that
+uprobes hook into.
+
+### I/O performed through `io_uring`
+
+Gadgets that trace I/O operations, such as `trace_open`, rely on hooking
+individual syscalls (e.g., `open()`). These gadgets cannot observe operations
+that are submitted through `io_uring`, because `io_uring` bypasses the normal
+syscall entry path and dispatches requests directly within the kernel.
